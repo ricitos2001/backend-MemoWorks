@@ -1,47 +1,83 @@
 package com.example.catalog.services;
 
-import java.util.List;
-
-import com.example.catalog.domain.dto.CreateTaskDTO;
-import com.example.catalog.domain.dto.UpdateTaskDTO;
+import com.example.catalog.domain.dto.TaskRequestDTO;
+import com.example.catalog.domain.dto.TaskResponseDTO;
 import com.example.catalog.domain.entities.Task;
+import com.example.catalog.domain.entities.User;
+import com.example.catalog.mappers.TaskMapper;
 import com.example.catalog.repositories.TaskRepository;
+import com.example.catalog.repositories.UserRepository;
+import com.example.catalog.web.exceptions.DuplicatedTaskException;
+import com.example.catalog.web.exceptions.TaskNotFoundException;
+import com.example.catalog.web.exceptions.UserNotFoundException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
+
+import java.util.Optional;
 
 @Service
 @Transactional
 public class TaskService {
     private final TaskRepository taskRepository;
-    public TaskService(TaskRepository taskRepository) { this.taskRepository = taskRepository; }
+    private final UserRepository userRepository;
 
-    public List<Task> list(Boolean status) {
-        return (status == null) ? taskRepository.findAll() : taskRepository.findByStatus(status);
+    public TaskService(TaskRepository taskRepository, UserRepository userRepository) { this.taskRepository = taskRepository;
+        this.userRepository = userRepository;
     }
 
-    public Task showTask(Long id) {
-        return taskRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Task not found"));
+    public Page<TaskResponseDTO> list(Pageable pageable) {
+        Page<TaskResponseDTO> tasks = taskRepository.findAll(pageable).map(TaskMapper::toDTO);
+        return tasks;
     }
 
-    public Task create(CreateTaskDTO dto) {
-        Task newTask = Task.builder().title(dto.title()).description(dto.description()).date(dto.date()).status(false).build();
-        return taskRepository.save(newTask);
+    public TaskResponseDTO showById(Long id) {
+        Task task = taskRepository.getTaskById(id);
+        if (task == null) {
+            throw new TaskNotFoundException(id);
+        } else {
+            return TaskMapper.toDTO(task);
+        }
     }
 
-    public Task updateTask(Long id, @RequestBody UpdateTaskDTO dto) {
-        Task task =taskRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Task not found"));
-        task.setTitle(dto.title());
-        task.setDescription(dto.description());
-        task.setDate(dto.date());
-        task.setStatus(dto.status());
-        return task;
+    public TaskResponseDTO showByTitle(String title) {
+        Task task = taskRepository.getTaskByTitle(title);
+        if (task == null) {
+            throw new TaskNotFoundException(title);
+        } else {
+            return TaskMapper.toDTO(task);
+        }
     }
 
-    public Task toggle(Long id) {
-        Task task = taskRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Task not found"));
-        task.setStatus(!task.getStatus());
-        return task;
+    public TaskResponseDTO create(TaskRequestDTO dto) {
+        if (taskRepository.existsByTitle(dto.getTitle())) {
+            throw new DuplicatedTaskException(dto.getTitle());
+        } else {
+            User user = userRepository.findById(dto.getAssigmentFor().getId()).orElseThrow(() -> new UserNotFoundException(dto.getAssigmentFor().getId()));
+            Task task = TaskMapper.toEntity(dto);
+            task.setAssigmentFor(user);
+            Task savedTask = taskRepository.save(task);
+            return TaskMapper.toDTO(savedTask);
+        }
+    }
+
+    public TaskResponseDTO update(Long id, @RequestBody TaskRequestDTO dto) {
+        Task task = taskRepository.findById(id).orElseThrow(() -> new TaskNotFoundException(id));
+        User user = userRepository.findById(dto.getAssigmentFor().getId()).orElseThrow(() -> new UserNotFoundException(dto.getAssigmentFor().getId()));
+        task.setAssigmentFor(user);
+        updateBasicFields(dto, task);
+        Task updatedTask = taskRepository.save(task);
+        return TaskMapper.toDTO(updatedTask);
+    }
+
+    private void updateBasicFields(TaskRequestDTO task, Task updatedTask) {
+        Optional.ofNullable(task.getTitle()).ifPresent(updatedTask::setTitle);
+        Optional.ofNullable(task.getDescription()).ifPresent(updatedTask::setDescription);
+        Optional.ofNullable(task.getDate()).ifPresent(updatedTask::setDate);
+        Optional.ofNullable(task.getAssigmentFor()).ifPresent(updatedTask::setAssigmentFor);
+        Optional.ofNullable(task.getStatus()).ifPresent(updatedTask::setStatus);
     }
 
     public void delete(Long id) {

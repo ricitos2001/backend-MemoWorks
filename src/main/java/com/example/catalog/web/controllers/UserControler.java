@@ -1,16 +1,15 @@
 package com.example.catalog.web.controllers;
 
-import com.example.catalog.domain.dto.CreateUserDTO;
-import com.example.catalog.domain.dto.UpdateUserDTO;
-import com.example.catalog.domain.entities.User;
+import com.example.catalog.domain.dto.UserRequestDTO;
+import com.example.catalog.domain.dto.UserResponseDTO;
 import com.example.catalog.services.UserService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.net.URI;
-import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/v1/users", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -23,26 +22,32 @@ public class UserControler {
     }
 
     @GetMapping
-    public ResponseEntity<List<User>> list() {
-        List<User> users = userService.list();
+    public ResponseEntity<Page<UserResponseDTO>> list(Pageable pageable) {
+        Page<UserResponseDTO> users = userService.list(pageable);
         return ResponseEntity.ok(users);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<User> bookById(@PathVariable(name = "id") Long id) {
-        User user = userService.showUser(id);
+    @GetMapping("/username/{username}")
+    public ResponseEntity<UserResponseDTO> getByName(@PathVariable(name = "username") String username) {
+        UserResponseDTO user = userService.showByName(username);
+        return ResponseEntity.ok(user);
+    }
+
+    @GetMapping("/id/{id}")
+    public ResponseEntity<UserResponseDTO> getById(@PathVariable(name = "id") Long id) {
+        UserResponseDTO user = userService.showById(id);
         return ResponseEntity.ok(user);
     }
 
     @PostMapping
-    public ResponseEntity<User> create(@RequestBody @Valid CreateUserDTO dto) {
-        User saved = userService.create(dto);
-        return ResponseEntity.created(URI.create("/api/v1/users/" + saved.getId())).body(saved);
+    public ResponseEntity<UserResponseDTO> create(@RequestBody @Valid UserRequestDTO dto) {
+        UserResponseDTO saved = userService.create(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
 
-    @PutMapping("/{id}/toggle")
-    public ResponseEntity<User> toggle(@PathVariable(name = "id") Long id, UpdateUserDTO dto) {
-        User toggled = userService.toggle(id, dto);
+    @PutMapping("/{id}")
+    public ResponseEntity<UserResponseDTO> update(@PathVariable(name = "id") Long id, @RequestBody @Valid UserRequestDTO dto) {
+        UserResponseDTO toggled = userService.update(id, dto);
         return ResponseEntity.ok(toggled);
     }
 

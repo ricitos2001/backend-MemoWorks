@@ -7,4 +7,10 @@ import java.util.List;
 
 public interface TaskRepository extends JpaRepository<Task, Long> {
     List<Task> findByStatus(boolean status);
+
+    Task getTaskById(Long id);
+
+    Task getTaskByTitle(String title);
+
+    boolean existsByTitle(String title);
 }
