@@ -43,7 +43,7 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable) // Deshabilitar CSRF
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/authenticate", "/auth/register", "/auth/logout").permitAll()
+                        .requestMatchers("/api/v1/auth/authenticate", "/api/v1/auth/register", "/api/v1/auth/logout").permitAll()
                         .requestMatchers("/groups/**").hasAnyRole("USUARIO") // Usuarios pueden gestionar préstamos
                         .requestMatchers("/tasks/**").hasAnyRole("USUARIO") // General para ver libros
                         .requestMatchers(("/users/**")).hasAnyRole("USUARIO") // General para ver autores
