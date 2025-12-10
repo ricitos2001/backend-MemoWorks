@@ -3,6 +3,8 @@ package com.example.catalog.web.controllers;
 import com.example.catalog.domain.dto.TaskRequestDTO;
 import com.example.catalog.domain.dto.TaskResponseDTO;
 import com.example.catalog.services.TaskService;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -11,6 +13,13 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@SecurityScheme(
+        name = "BearerAuth",
+        type=SecuritySchemeType.HTTP,
+        scheme = "bearer",
+        bearerFormat = "JWT"
+
+)
 @RestController
 @RequestMapping(value = "/api/v1/tasks", produces = MediaType.APPLICATION_JSON_VALUE)
 public class TaskController {
@@ -22,8 +31,14 @@ public class TaskController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<TaskResponseDTO>> list(@RequestParam(name = "status", required = false) Boolean status, Pageable pageable) {
+    public ResponseEntity<Page<TaskResponseDTO>> list(@RequestParam(name = "status", required = false) Pageable pageable) {
         Page<TaskResponseDTO> tasks = taskService.list(pageable);
+        return ResponseEntity.ok(tasks);
+    }
+
+    @GetMapping("/myTasks/{id}")
+    public ResponseEntity<Page<TaskResponseDTO>> listByUserId(@PathVariable(name = "id") Long userId, Pageable pageable) {
+        Page<TaskResponseDTO> tasks = taskService.listByUserId(userId, pageable);
         return ResponseEntity.ok(tasks);
     }
 

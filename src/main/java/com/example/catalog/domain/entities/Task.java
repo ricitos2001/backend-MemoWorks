@@ -5,7 +5,6 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -25,13 +24,13 @@ public class Task {
     private String description;
     @Column(nullable = false)
     private LocalDateTime date;
-
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(nullable = false)
+    @JoinColumn(name = "user_id", nullable = false)
     @JsonBackReference
     private User assigmentFor;
     @Column(nullable = false)
     private Boolean status;
     @Column (nullable = false)
+    @ElementCollection
     private List<String> labels;
 }

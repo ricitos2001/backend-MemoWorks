@@ -33,6 +33,10 @@ public class TaskService {
         return tasks;
     }
 
+    public Page<TaskResponseDTO> listByUserId(Long userId, Pageable pageable) {
+        return taskRepository.findByAssigmentForId(userId, pageable).map(TaskMapper::toDTO);
+    }
+
     public TaskResponseDTO showById(Long id) {
         Task task = taskRepository.getTaskById(id);
         if (task == null) {

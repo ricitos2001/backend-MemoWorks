@@ -22,6 +22,10 @@ public class JwtUtil {
         return extractClaim(token, Claims::getSubject);
     }
 
+    public Long extractUserId(String token) {
+        return extractAllClaims(token).get("id", Long.class);
+    }
+
     // Extraer la fecha de expiración del token
     public Date extractExpiration(String token) {
         return extractClaim(token, Claims::getExpiration);
@@ -52,8 +56,9 @@ public class JwtUtil {
     }
 
     // Generar un token JWT
-    public String generateToken(UserDetails userDetails) {
+    public String generateToken(UserDetails userDetails, Long userId) {
         Map<String, Object> claims = new HashMap<>();
+        claims.put("id", userId);
         return createToken(claims, userDetails.getUsername());
     }
 

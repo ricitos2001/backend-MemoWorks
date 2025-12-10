@@ -42,14 +42,15 @@ public class AuthController {
     @PostMapping("/authenticate")
     public AuthResponse authenticate(@RequestBody UserLoginDTO request, HttpServletResponse response) {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
-        String token = jwtUtil.generateToken((CustomUserDetails) authentication.getPrincipal());
 
-        //Crear la cookie
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        String token = jwtUtil.generateToken((CustomUserDetails) authentication.getPrincipal(), userDetails.getId());
+
         Cookie jwtCookie = new Cookie("jwt", token);
-        jwtCookie.setHttpOnly(true); // Solo accesible desde el servidor
-        jwtCookie.setSecure(true); // Solo en conexiones HTTPS
-        jwtCookie.setPath("/"); // Disponible para toda la aplicación
-        jwtCookie.setMaxAge(60 * 60 * 10); // Validez de 10 horas
+        jwtCookie.setHttpOnly(true);
+        jwtCookie.setSecure(true);
+        jwtCookie.setPath("/");
+        jwtCookie.setMaxAge(60 * 60 * 10);
 
         // Agregar la cookie a la respuesta
         response.addCookie(jwtCookie);
@@ -100,7 +101,7 @@ public class AuthController {
         User newUser = userService.createUser(dto);
 
         // Generar token JWT para el nuevo usuario
-        String token = jwtUtil.generateToken(new CustomUserDetails(newUser));
+        String token = jwtUtil.generateToken(new CustomUserDetails(newUser), newUser.getId());
 
         // Devolver el token en la respuesta
         return new AuthResponse(token);
