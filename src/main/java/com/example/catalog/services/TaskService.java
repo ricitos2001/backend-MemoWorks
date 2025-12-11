@@ -80,6 +80,7 @@ public class TaskService {
         Optional.ofNullable(task.getTitle()).ifPresent(updatedTask::setTitle);
         Optional.ofNullable(task.getDescription()).ifPresent(updatedTask::setDescription);
         Optional.ofNullable(task.getDate()).ifPresent(updatedTask::setDate);
+        Optional.ofNullable(task.getTime()).ifPresent(updatedTask::setTime);
         Optional.ofNullable(task.getAssigmentFor()).ifPresent(updatedTask::setAssigmentFor);
         Optional.ofNullable(task.getStatus()).ifPresent(updatedTask::setStatus);
         Optional.ofNullable(task.getLabels()).ifPresent(updatedTask::setLabels);

@@ -10,6 +10,7 @@ public class TaskMapper {
         task.setTitle(dto.getTitle());
         task.setDescription(dto.getDescription());
         task.setDate(dto.getDate());
+        task.setTime(dto.getTime());
         task.setAssigmentFor(dto.getAssigmentFor());
         task.setStatus(dto.getStatus());
         task.setLabels(dto.getLabels());
@@ -22,6 +23,7 @@ public class TaskMapper {
                task.getTitle(),
                task.getDescription(),
                task.getDate(),
+               task.getTime(),
                task.getAssigmentFor(),
                task.getStatus(),
                task.getLabels()
