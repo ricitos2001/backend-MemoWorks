@@ -49,6 +49,15 @@ public class UserService {
         }
     }
 
+    public UserResponseDTO showByEmail(String email) {
+        User user = userRepository.getUserByEmail(email);
+        if (user == null) {
+            throw new UserNotFoundException(email);
+        } else {
+            return UserMapper.toDTO(user);
+        }
+    }
+
     public UserResponseDTO create(UserRequestDTO dto) {
         if (userRepository.existsByUsername(dto.getUsername())) {
             throw new DuplicatedUserException(dto.getUsername());

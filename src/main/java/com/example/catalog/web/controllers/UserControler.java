@@ -27,15 +27,21 @@ public class UserControler {
         return ResponseEntity.ok(users);
     }
 
+    @GetMapping("/id/{id}")
+    public ResponseEntity<UserResponseDTO> getById(@PathVariable(name = "id") Long id) {
+        UserResponseDTO user = userService.showById(id);
+        return ResponseEntity.ok(user);
+    }
+
     @GetMapping("/username/{username}")
     public ResponseEntity<UserResponseDTO> getByName(@PathVariable(name = "username") String username) {
         UserResponseDTO user = userService.showByName(username);
         return ResponseEntity.ok(user);
     }
 
-    @GetMapping("/id/{id}")
-    public ResponseEntity<UserResponseDTO> getById(@PathVariable(name = "id") Long id) {
-        UserResponseDTO user = userService.showById(id);
+    @GetMapping("/email/{email}")
+    public ResponseEntity<UserResponseDTO> getByEmail(@PathVariable(name = "email") String email) {
+        UserResponseDTO user = userService.showByEmail(email);
         return ResponseEntity.ok(user);
     }
 

@@ -59,6 +59,7 @@ public class SecurityConfig {
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/v1/auth/authenticate", "/api/v1/auth/register", "/api/v1/auth/logout").permitAll()
+                        .requestMatchers("/api/v1/users/email/**", "/api/v1/users/username/**").permitAll()
                         .requestMatchers("/groups/**").hasAnyRole("USUARIO")
                         .requestMatchers("/tasks/**").hasAnyRole("USUARIO")
                         .requestMatchers(("/users/**")).hasAnyRole("USUARIO")

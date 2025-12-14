@@ -1,5 +1,6 @@
 INSERT INTO users (id, name, surnames, username, phone_number, email, password, rol)
-VALUES (1, 'usuario', 'usuario', 'usuario', '+34111111111', 'user@example.com', '$2a$10$xkNM.N2UiMlUP.uQjCvN6.rUi22jOsQo/6PmAY9yIVjSu6VzkT6ty', 'USUARIO');
+VALUES (1, 'usuario', 'usuario', 'usuario', '+34111111111', 'user@example.com', '$2a$10$OnYIEcds5O4V.c5pYMm8GuLncbMQGEIl4Upb0k3vFgTg2nD894vXq' ||
+                                                                                '', 'USUARIO');
 
 INSERT INTO tasks (id, title, description, date, time, user_id, status)
 VALUES
