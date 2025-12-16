@@ -68,17 +68,6 @@ public class UserService {
         }
     }
 
-    public User createUser(UserRequestDTO dto) {
-        if (userRepository.existsByUsername(dto.getUsername())) {
-            throw new DuplicatedUserException(dto.getUsername());
-        } else {
-            User user = UserMapper.toEntity(dto);
-            user.setPassword(passwordEncoder.encode(dto.getPassword()));
-            User savedUser = userRepository.save(user);
-            return savedUser;
-        }
-    }
-
     public UserResponseDTO update(Long id, @RequestBody UserRequestDTO dto) {
         User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
         updateBasicFields(dto, user);
@@ -100,5 +89,24 @@ public class UserService {
     public void delete(Long id) {
         if (!userRepository.existsById(id)) throw new IllegalArgumentException("User not found");
         userRepository.deleteById(id);
+    }
+
+    public boolean existsByEmail(String email) {
+        return userRepository.findByEmail(email).isPresent();
+    }
+
+    public boolean existsByUsername(String username) {
+        return userRepository.findByUsername(username).isPresent();
+    }
+
+    public User createUser(UserRequestDTO dto) {
+        if (userRepository.existsByUsername(dto.getUsername())) {
+            throw new DuplicatedUserException(dto.getUsername());
+        } else {
+            User user = UserMapper.toEntity(dto);
+            user.setPassword(passwordEncoder.encode(dto.getPassword()));
+            User savedUser = userRepository.save(user);
+            return savedUser;
+        }
     }
 }

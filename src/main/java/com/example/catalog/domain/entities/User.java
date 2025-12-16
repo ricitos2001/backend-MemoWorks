@@ -27,9 +27,8 @@ public class User {
     private String username;
     @Column(nullable = false, unique = true)
     private String phoneNumber;
-    @Column(nullable = false, unique = true)
+    @Column(unique = true)
     private String email;
-    @Column(nullable = false, unique = true)
     private String password;
     @OneToMany(mappedBy = "assigmentFor", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference

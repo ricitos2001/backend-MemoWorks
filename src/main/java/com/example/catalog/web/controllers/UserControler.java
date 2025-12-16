@@ -11,6 +11,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping(value = "/api/v1/users", produces = MediaType.APPLICATION_JSON_VALUE)
 public class UserControler {
@@ -62,4 +64,17 @@ public class UserControler {
         userService.delete(id);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/email-exists")
+    public ResponseEntity<Map<String, Boolean>> emailExists(@RequestParam String email) {
+        boolean exists = userService.existsByEmail(email);
+        return ResponseEntity.ok(Map.of("exists", exists));
+    }
+
+    @GetMapping("/username-exists")
+    public ResponseEntity<Map<String, Boolean>> usernameExists(@RequestParam String username) {
+        boolean exists = userService.existsByUsername(username);
+        return ResponseEntity.ok(Map.of("exists", exists));
+    }
+
 }
