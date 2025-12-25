@@ -5,7 +5,7 @@ services:
     container_name: backend-memoworks
     env_file:
       - .env
-    image: postgres:15.0
+    image: postgres:18.0
     restart: unless-stopped
     environment:
       PG_DATABASE: memoWorks
@@ -15,7 +15,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - memoWorks_data:/var/lib/postgresql
+      - memoWorks_data:/var/lib/mysql
     command: --default-authentication-plugin=mysql_native_password
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
@@ -34,7 +34,7 @@ services:
     ports:
     - "${PORT}:8080"
     environment:
-      SPRING_DATASOURCE_URL: "jdbc:postgresql://${PGHOST}:${PGPORT:5432}/${PGDATABASE}?sslmode=require"
+      SPRING_DATASOURCE_URL: "Jdbc:postgresql://${PGHOST}:${PGPORT}/${PGDATABASE}?sslmode=require"
       SPRING_DATASOURCE_USERNAME: ${PGUSER}
       SPRING_DATASOURCE_PASSWORD: ${PGPASSWORD}
       SPRING_JPA_HIBERNATE_DDL_AUTO: "update"
