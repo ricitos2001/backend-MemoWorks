@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.Instant;
+import java.util.Date;
 
 @Entity
 @Getter
@@ -19,5 +20,5 @@ public class Notification {
     private Long id;
     private String title;
     private String message;
-    private Instant createdAt = Instant.now();
+    private Date createdAt;
 }

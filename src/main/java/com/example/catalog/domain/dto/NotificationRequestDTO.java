@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.Instant;
+import java.util.Date;
 
 @Getter
 @Setter
@@ -14,5 +15,5 @@ import java.time.Instant;
 public class NotificationRequestDTO {
     private String title;
     private String message;
-    private Instant createdAt = Instant.now();
+    private Date createdAt;
 }

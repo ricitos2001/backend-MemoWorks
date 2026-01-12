@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.time.Instant;
+import java.util.Date;
 
 @Getter
 @AllArgsConstructor
@@ -11,5 +12,5 @@ public class NotificationResponseDTO {
     private Long id;
     private String title;
     private String message;
-    private Instant createdAt;
+    private Date createdAt;
 }
