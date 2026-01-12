@@ -9,9 +9,14 @@ import com.example.catalog.domain.entities.Notification;
 import com.example.catalog.mappers.NotificationMapper;
 import com.example.catalog.repositories.NotificationRepository;
 import com.example.catalog.web.exceptions.DuplicatedNotificationException;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
@@ -40,12 +45,5 @@ public class NotificationService {
             Notification savedNotification = repository.save(notification);
             return NotificationMapper.toDTO(savedNotification);
         }
-    }
-
-    public Notification create(String title, String message) {
-        Notification n = new Notification();
-        n.setTitle(title);
-        n.setMessage(message);
-        return repository.save(n);
     }
 }

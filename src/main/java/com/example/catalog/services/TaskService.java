@@ -95,6 +95,7 @@ public class TaskService {
         Optional.ofNullable(task.getAssigmentFor()).ifPresent(updatedTask::setAssigmentFor);
         Optional.ofNullable(task.getStatus()).ifPresent(updatedTask::setStatus);
         Optional.ofNullable(task.getLabels()).ifPresent(updatedTask::setLabels);
+        Optional.ofNullable(task.getImage()).ifPresent(updatedTask::setImage);
     }
 
     public void delete(Long id) {
@@ -114,7 +115,6 @@ public class TaskService {
     }
 
     public void guardarAvatar(Long usuarioId, MultipartFile avatar) throws IOException {
-        validarTamanoArchivo(avatar);
         validarTipoDeArchivo(avatar);
         User usuario = userRepository.findById(usuarioId).orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado con id: " + usuarioId));
         String rutaArchivo = fileService.guardarFichero(usuarioId, avatar);
