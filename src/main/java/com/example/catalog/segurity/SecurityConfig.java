@@ -60,6 +60,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/v1/auth/authenticate", "/api/v1/auth/register", "/api/v1/auth/logout").permitAll()
                         .requestMatchers("/api/v1/users/email-exists/**", "/api/v1/users/username-exists/**").permitAll()
+                        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "/swagger-ui/index.html").permitAll()
                         .requestMatchers("/groups/**").hasAnyRole("USUARIO")
                         .requestMatchers("/tasks/**").hasAnyRole("USUARIO")
                         .requestMatchers(("/users/**")).hasAnyRole("USUARIO")
