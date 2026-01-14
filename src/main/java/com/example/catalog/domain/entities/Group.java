@@ -24,7 +24,7 @@ public class Group {
     //@JoinColumn(nullable = false, unique = true)
     @OneToOne
     private User adminUser;
-    @OneToMany
+    @ManyToMany
     //@Column(nullable = false)
     @JsonBackReference
     private List<User> users;
