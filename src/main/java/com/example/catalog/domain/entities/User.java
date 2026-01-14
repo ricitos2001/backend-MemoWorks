@@ -2,6 +2,7 @@ package com.example.catalog.domain.entities;
 
 import com.example.catalog.domain.enums.Rol;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
@@ -38,6 +39,6 @@ public class User {
     @Column(nullable = true)
     private String avatar;
     @ManyToMany(mappedBy = "users")
-    @JsonBackReference
+    @JsonIgnore
     private List<Group> groups;
 }
