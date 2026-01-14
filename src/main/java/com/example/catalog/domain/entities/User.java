@@ -37,4 +37,7 @@ public class User {
     private Rol rol;
     @Column(nullable = true)
     private String avatar;
+    @ManyToMany(mappedBy = "users")
+    @JsonBackReference
+    private List<Group> groups;
 }
