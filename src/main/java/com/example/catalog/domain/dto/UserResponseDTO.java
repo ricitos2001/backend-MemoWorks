@@ -20,5 +20,5 @@ public class UserResponseDTO {
     private List<Task> tasks;
     private Rol rol;
     private String avatar;
-
+    private List<Long> groupIds;
 }

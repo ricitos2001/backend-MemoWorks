@@ -1,5 +1,6 @@
 package com.example.catalog.domain.dto;
 
+import com.example.catalog.domain.entities.Group;
 import com.example.catalog.domain.entities.Task;
 import com.example.catalog.domain.enums.Rol;
 import jakarta.persistence.Column;
@@ -34,5 +35,7 @@ public class UserRequestDTO {
     private Rol rol;
     @Column(nullable = true)
     private String avatar;
+    @Column(nullable = true)
+    private List<Group> groups;
 
 }

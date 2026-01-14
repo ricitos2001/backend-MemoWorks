@@ -120,6 +120,7 @@ public class UserService {
         Optional.ofNullable(user.getTasks()).ifPresent(updatedUser::setTasks);
         Optional.ofNullable(user.getRol()).ifPresent(updatedUser::setRol);
         Optional.ofNullable(user.getAvatar()).ifPresent(updatedUser::setAvatar);
+        Optional.ofNullable(user.getGroups()).ifPresent(updatedUser::setGroups);
     }
 
     public void delete(Long id) {

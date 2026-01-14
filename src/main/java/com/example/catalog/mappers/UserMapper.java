@@ -2,6 +2,7 @@ package com.example.catalog.mappers;
 
 import com.example.catalog.domain.dto.UserRequestDTO;
 import com.example.catalog.domain.dto.UserResponseDTO;
+import com.example.catalog.domain.entities.Group;
 import com.example.catalog.domain.entities.User;
 
 public class UserMapper {
@@ -16,6 +17,7 @@ public class UserMapper {
         user.setTasks(dto.getTasks());
         user.setRol(dto.getRol());
         user.setAvatar(dto.getAvatar());
+        user.setGroups(dto.getGroups());
         return user;
     }
 
@@ -30,7 +32,8 @@ public class UserMapper {
                 user.getPassword(),
                 user.getTasks(),
                 user.getRol(),
-                user.getAvatar()
+                user.getAvatar(),
+                user.getGroups().stream().map(Group::getId).toList()
         );
     }
 }
