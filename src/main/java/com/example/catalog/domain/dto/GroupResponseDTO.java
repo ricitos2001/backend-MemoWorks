@@ -1,6 +1,7 @@
 package com.example.catalog.domain.dto;
 
 import com.example.catalog.domain.entities.User;
+import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -14,4 +15,5 @@ public class GroupResponseDTO {
     private String description;
     private User adminUser;
     private List<User> users;
+    private String image;
 }

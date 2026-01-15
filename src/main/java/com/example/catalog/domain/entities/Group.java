@@ -28,4 +28,6 @@ public class Group {
     @JoinTable(name = "group_user", joinColumns = @JoinColumn(name = "group_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
     @JsonManagedReference
     private List<User> users;
+    @Column(nullable = true)
+    private String image;
 }

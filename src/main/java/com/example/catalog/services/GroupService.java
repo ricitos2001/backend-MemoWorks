@@ -4,28 +4,36 @@ import com.example.catalog.domain.dto.*;
 import com.example.catalog.domain.entities.Group;
 import com.example.catalog.domain.entities.User;
 import com.example.catalog.mappers.GroupMapper;
-import com.example.catalog.mappers.TaskMapper;
 import com.example.catalog.repositories.GroupRepository;
 import com.example.catalog.repositories.UserRepository;
 import com.example.catalog.web.exceptions.DuplicatedGroupException;
 import com.example.catalog.web.exceptions.GroupNotFoundException;
+import com.example.catalog.web.exceptions.ResourceNotFoundException;
 import com.example.catalog.web.exceptions.UserNotFoundException;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.util.Arrays;
 import java.util.Optional;
 
 @Service
 @Transactional
 public class GroupService {
+    public static final String GRUPO_NO_ENCONTRADO_CON = "Usuario no encontrado con ";
     private final GroupRepository groupRepository;
     private final UserRepository userRepository;
+    private final FileService fileService;
 
-    public GroupService(GroupRepository groupRepository, UserRepository userRepository) { this.groupRepository = groupRepository;
+    public GroupService(GroupRepository groupRepository, UserRepository userRepository, FileService fileService) {
+        this.groupRepository = groupRepository;
         this.userRepository = userRepository;
+        this.fileService = fileService;
     }
 
     public Page<GroupResponseDTO> list(Pageable pageable) {
@@ -81,11 +89,46 @@ public class GroupService {
         Optional.ofNullable(group.getDescription()).ifPresent(updatedGroup::setDescription);
         Optional.ofNullable(group.getAdminUser()).ifPresent(updatedGroup::setAdminUser);
         Optional.ofNullable(group.getUsers()).ifPresent(updatedGroup::setUsers);
+        Optional.ofNullable(group.getImage()).ifPresent(updatedGroup::setImage);
     }
 
 
     public void delete(Long id) {
         if (!groupRepository.existsById(id)) throw new IllegalArgumentException("Group not found");
         groupRepository.deleteById(id);
+    }
+
+    public Resource obtenerAvatarGenerico(Long id) {
+        Group grupo = obtenerGrupoPorId(id);
+        if (grupo.getImage() == null || grupo.getImage().isEmpty()) {
+            throw new ResourceNotFoundException("El usuario no tiene un avatar asignado.");
+        }
+        return fileService.cargarFichero(grupo.getImage());
+    }
+
+    public void guardarAvatar(Long grupoId, MultipartFile avatar) throws IOException {
+        validarTipoDeArchivo(avatar);
+        User usuario = userRepository.findById(grupoId).orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado con id: " + grupoId));
+        String rutaArchivo = fileService.guardarFichero(grupoId, avatar);
+        usuario.setAvatar(rutaArchivo);
+        userRepository.save(usuario);
+    }
+
+    private void validarTamanoArchivo(MultipartFile avatar) {
+        long maxSizeInBytes = 1024 * 1024 * 5L; // 5MB
+        if (avatar.getSize() > maxSizeInBytes) {
+            throw new IllegalArgumentException("Tamaño de archivo excede el límite de 5MB");
+        }
+    }
+
+    private void validarTipoDeArchivo(MultipartFile avatar) {
+        String contentType = avatar.getContentType();
+        if (!Arrays.asList("image/png", "image/jpeg", "image/gif", "image/webp").contains(contentType)) {
+            throw new IllegalArgumentException("Tipo de archivo debe ser: (jpeg, png, gif, webp)");
+        }
+    }
+
+    public Group obtenerGrupoPorId(Long id) {
+        return groupRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(GRUPO_NO_ENCONTRADO_CON + "id " + id));
     }
 }

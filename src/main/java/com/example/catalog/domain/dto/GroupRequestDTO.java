@@ -1,6 +1,7 @@
 package com.example.catalog.domain.dto;
 
 import com.example.catalog.domain.entities.User;
+import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -22,4 +23,5 @@ public class GroupRequestDTO {
     private String description;
     private User adminUser;
     private List<User> users;
+    private String image;
 }

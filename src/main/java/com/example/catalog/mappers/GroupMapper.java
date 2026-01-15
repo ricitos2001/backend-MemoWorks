@@ -11,6 +11,7 @@ public class GroupMapper {
         group.setDescription(dto.getDescription());
         group.setAdminUser(dto.getAdminUser());
         group.setUsers(dto.getUsers());
+        group.setImage(dto.getImage());
         return group;
     }
 
@@ -20,7 +21,8 @@ public class GroupMapper {
                 group.getName(),
                 group.getDescription(),
                 group.getAdminUser(),
-                group.getUsers()
+                group.getUsers(),
+                group.getImage()
         );
     }
 }

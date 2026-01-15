@@ -103,9 +103,6 @@ public class TaskService {
         taskRepository.deleteById(id);
     }
 
-    /*************************************************************************************************************************************/
-
-    // FUNCIONES EN FASE DE PRUEBAS
     public Resource obtenerAvatarGenerico(Long id) {
         Task tarea = obtenerTareaPorId(id);
         if (tarea.getImage() == null || tarea.getImage().isEmpty()) {

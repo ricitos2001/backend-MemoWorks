@@ -7,6 +7,7 @@ import com.example.catalog.services.GroupService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -14,8 +15,14 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
+import java.io.IOException;
 import java.net.URI;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 @RestController
@@ -75,5 +82,66 @@ public class GroupControler {
     public ResponseEntity<Void> delete(@PathVariable(name = "id") Long id) {
         groupService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{id}/avatar")
+    @Operation(summary = "Cargar avatar de tarea", description = "Carga o actualiza el avatar asociado a una tarea específica utilizando su ID.", parameters = {@Parameter(name = "id", description = "ID de la tarea a la que se le asignará el avatar.")})
+    public ResponseEntity<?> cargarAvatar(@PathVariable(name = "id") Long id, @RequestParam("file") MultipartFile file) {
+        try {
+            groupService.guardarAvatar(id, file);
+            return ResponseEntity.ok("Avatar actualizado correctamente.");
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body("Error al cargar el avatar: " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/me/avatar")
+    @Operation(summary = "Obtener avatar del usuario logueado", description = "Obtiene el avatar asociado al usuario actualmente autenticado.")
+    public ResponseEntity<Resource> obtenerAvatarUsuarioLogueado() {
+        Resource avatar = groupService.obtenerAvatarGenerico(null);
+        try {
+            Path avatarPath = Paths.get(avatar.getURL().getPath());
+            MediaType mediaType = determinarMediaType(avatarPath);
+            return ResponseEntity.ok()
+                    .header("Content-Disposition", "inline; filename=\"" + avatar.getFilename() + "\"")
+                    .contentType(mediaType)
+                    .body(avatar);
+        } catch (IOException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error al procesar el archivo de avatar", e);
+        }
+    }
+
+    @GetMapping("/{id}/avatar")
+    @Operation(summary = "Obtener avatar de tarea por ID", description = "Obtiene el avatar asociado a una tarea específica utilizando su ID.", parameters = {@Parameter(name = "id", description = "ID de la tarea cuyo avatar se desea obtener.")})
+    public ResponseEntity<Resource> obtenerAvatar(@PathVariable(name = "id") Long id) {
+        Resource avatar = groupService.obtenerAvatarGenerico(id);
+        try {
+            Path avatarPath = Paths.get(avatar.getURL().getPath());
+            MediaType mediaType = determinarMediaType(avatarPath);
+            return ResponseEntity.ok()
+                    .header("Content-Disposition", "inline; filename=\"" + avatar.getFilename() + "\"")
+                    .contentType(mediaType)
+                    .body(avatar);
+        } catch (IOException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error al procesar el archivo de avatar", e);
+        }
+    }
+
+    @Operation(summary = "Determinar MediaType", description = "Determina el MediaType de un archivo dado su Path.", parameters = {@Parameter(name = "ficheroPath", description = "Path del archivo cuyo MediaType se desea determinar.")})
+    private MediaType determinarMediaType(Path ficheroPath) {
+        try {
+            String contentType = Files.probeContentType(ficheroPath);
+            if (contentType == null || contentType.isBlank()) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El tipo de contenido no puede ser nulo o vacío.");
+            }
+            return switch (contentType.toLowerCase()) {
+                case "image/jpeg" -> MediaType.IMAGE_JPEG;
+                case "image/png" -> MediaType.IMAGE_PNG;
+                case "image/gif" -> MediaType.IMAGE_GIF;
+                default -> throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Formato de imagen no soportado: " + contentType);
+            };
+        } catch (IOException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error al determinar el tipo de contenido", e);
+        }
     }
 }
