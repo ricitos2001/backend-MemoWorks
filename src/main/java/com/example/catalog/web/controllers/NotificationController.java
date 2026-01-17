@@ -1,6 +1,5 @@
 package com.example.catalog.web.controllers;
 
-import com.example.catalog.domain.dto.GroupResponseDTO;
 import com.example.catalog.domain.dto.NotificationRequestDTO;
 import com.example.catalog.domain.dto.NotificationResponseDTO;
 import com.example.catalog.services.NotificationService;
@@ -31,7 +30,7 @@ public class NotificationController {
         return ResponseEntity.ok(notifications);
     }
 
-    @GetMapping
+    @GetMapping("/myNotifications/{email}")
     public ResponseEntity<Page<NotificationResponseDTO>> getNotificationsByUserEmail(@PathVariable(name = "email") String email, Pageable pageable) {
         Page<NotificationResponseDTO> notifications = service.findByUserEmail(email, pageable);
         return ResponseEntity.ok(notifications);
