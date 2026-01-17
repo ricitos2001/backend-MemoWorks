@@ -11,6 +11,7 @@ public class NotificationMapper {
         notification.setTitle(dto.getTitle());
         notification.setMessage(dto.getMessage());
         notification.setCreatedAt(dto.getCreatedAt());
+        notification.setUserEmail(dto.getUserEmail());
         return notification;
     }
 
@@ -19,7 +20,8 @@ public class NotificationMapper {
                 notification.getId(),
                 notification.getTitle(),
                 notification.getMessage(),
-                 notification.getCreatedAt()
+                notification.getCreatedAt(),
+                notification.getUserEmail()
         );
     }
 }

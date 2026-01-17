@@ -31,6 +31,12 @@ public class NotificationController {
         return ResponseEntity.ok(notifications);
     }
 
+    @GetMapping
+    public ResponseEntity<Page<NotificationResponseDTO>> getNotificationsByUserEmail(@PathVariable(name = "email") String email, Pageable pageable) {
+        Page<NotificationResponseDTO> notifications = service.findByUserEmail(email, pageable);
+        return ResponseEntity.ok(notifications);
+    }
+
     @PostMapping
     @Operation(summary = "Create a new notification", description = "Create a new notification with the provided details.", parameters = {@Parameter(name = "dto", description = "Notification details")})
     public ResponseEntity<NotificationResponseDTO> create(@RequestBody @Valid NotificationRequestDTO dto) {

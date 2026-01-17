@@ -16,4 +16,5 @@ public class NotificationRequestDTO {
     private String title;
     private String message;
     private Date createdAt;
+    private String userEmail;
 }

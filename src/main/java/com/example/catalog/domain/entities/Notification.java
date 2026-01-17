@@ -1,5 +1,6 @@
 package com.example.catalog.domain.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -21,4 +22,7 @@ public class Notification {
     private String title;
     private String message;
     private Date createdAt;
+    @JoinColumn(name = "user_email", nullable = false)
+    @JsonBackReference
+    private String userEmail;
 }
