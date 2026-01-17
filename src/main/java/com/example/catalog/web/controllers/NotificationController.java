@@ -31,6 +31,7 @@ public class NotificationController {
     }
 
     @GetMapping("/myNotifications/{email}")
+    @Operation(summary = "Get paginated list of notifications by user email", description = "Retrieve a paginated list of notifications associated with a specific user email.", parameters = {@Parameter(name = "email", description = "User email"), @Parameter(name = "pageable", description = "Pagination information")})
     public ResponseEntity<Page<NotificationResponseDTO>> getNotificationsByUserEmail(@PathVariable(name = "email") String email, Pageable pageable) {
         Page<NotificationResponseDTO> notifications = service.findByUserEmail(email, pageable);
         return ResponseEntity.ok(notifications);
@@ -41,5 +42,12 @@ public class NotificationController {
     public ResponseEntity<NotificationResponseDTO> create(@RequestBody @Valid NotificationRequestDTO dto) {
         NotificationResponseDTO saved = service.create(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(saved);
+    }
+
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Delete a notification by ID", description = "Delete a notification using its unique ID.", parameters = {@Parameter(name = "id", description = "Notification ID")})
+    public ResponseEntity<Void> delete(@PathVariable(name = "id") Long id) {
+        service.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }
