@@ -65,6 +65,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/tasks/**").hasAnyRole("USUARIO")
                         .requestMatchers("/api/v1/users/**").hasAnyRole("USUARIO")
                         .requestMatchers("/api/v1/notifications/**").hasAnyRole("USUARIO")
+                        .requestMatchers("/api/v1/password/**").hasAnyRole("USUARIO")
+
                         .anyRequest().authenticated()
                 )
                 .httpBasic(Customizer.withDefaults())
