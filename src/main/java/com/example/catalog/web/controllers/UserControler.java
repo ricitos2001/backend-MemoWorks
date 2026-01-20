@@ -62,7 +62,7 @@ public class UserControler {
         return ResponseEntity.ok(user);
     }
 
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping
     @Operation(summary = "Crear usuario", description = "Crea un nuevo usuario con los datos proporcionados.", parameters = {@Parameter(name = "dto", description = "Datos del usuario a crear.")})
     public ResponseEntity<UserResponseDTO> create(@RequestBody @Valid UserRequestDTO dto) {
         UserResponseDTO saved = userService.create(dto);

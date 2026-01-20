@@ -1,6 +1,7 @@
 package com.example.catalog.domain.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -29,7 +30,8 @@ public class Task {
     private LocalTime time;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", nullable = false)
-    @JsonBackReference
+    //@JsonBackReference
+    @JsonIgnore
     private User assigmentFor;
     @Column(nullable = false)
     private Boolean status;
