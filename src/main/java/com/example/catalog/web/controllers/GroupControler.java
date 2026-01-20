@@ -63,7 +63,7 @@ public class GroupControler {
         return ResponseEntity.ok(group);
     }
 
-    @PostMapping
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Create a new group", description = "Create a new group with the provided details.", parameters = {@Parameter(name = "dto", description = "Group details")})
     public ResponseEntity<GroupResponseDTO> create(@RequestBody @Valid GroupRequestDTO dto) {
         GroupResponseDTO saved = groupService.create(dto);

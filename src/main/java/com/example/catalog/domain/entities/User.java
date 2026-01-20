@@ -39,6 +39,7 @@ public class User {
     @Column(nullable = true)
     private String avatar;
     @ManyToMany(mappedBy = "users")
-    @JsonIgnore
+    //@JsonIgnore
+    @JsonBackReference
     private List<Group> groups;
 }

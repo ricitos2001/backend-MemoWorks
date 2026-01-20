@@ -5,6 +5,7 @@ import com.example.catalog.domain.entities.PasswordResetToken;
 import com.example.catalog.domain.entities.User;
 import com.example.catalog.repositories.PasswordResetTokenRepository;
 import com.example.catalog.repositories.UserRepository;
+import com.example.catalog.services.email.EmailService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -31,14 +33,19 @@ public class PasswordResetService {
     private final PasswordResetTokenRepository tokenRepository;
     private final PasswordEncoder passwordEncoder;
     private final SecureRandom secureRandom = new SecureRandom();
+    private final EmailService emailService;
 
     @Value("${app.password-reset.token-expiration-minutes:60}")
     private long tokenExpirationMinutes;
 
-    public PasswordResetService(UserRepository userRepository, PasswordResetTokenRepository tokenRepository, PasswordEncoder passwordEncoder) {
+    @Value("${app.frontend.base-url:http://localhost:4200}")
+    private String frontendBaseUrl;
+
+    public PasswordResetService(UserRepository userRepository, PasswordResetTokenRepository tokenRepository, PasswordEncoder passwordEncoder, EmailService emailService) {
         this.userRepository = userRepository;
         this.tokenRepository = tokenRepository;
         this.passwordEncoder = passwordEncoder;
+        this.emailService = emailService;
     }
 
     public void requestPasswordReset(String email) {
@@ -67,9 +74,29 @@ public class PasswordResetService {
 
         tokenRepository.save(token);
 
-        // Enviar correo (en dev: loggear el token y link)
-        String resetLink = String.format("%s?token=%s", getFrontendResetUrl(), rawToken);
-        logger.info("Password reset requested for user {}. Reset link (DEV): {}", user.getEmail(), resetLink);
+        // Construir link y enviar correo
+        try {
+            String encoded = URLEncoder.encode(rawToken, StandardCharsets.UTF_8);
+            String resetLink = String.format("%s/reset-password?token=%s", frontendBaseUrl, encoded);
+
+            // preparar modelo para plantilla
+            java.util.Map<String, Object> model = new java.util.HashMap<>();
+            model.put("link", resetLink);
+            model.put("user", user);
+
+            String subject = "Restablece tu contraseña - MemoWorks";
+
+            // enviar HTML con plantilla
+            emailService.sendTemplateEmail(user.getEmail(), subject, "password-reset.html", model);
+
+            // Log en dev
+            logger.info("Password reset requested for user {}. Reset link sent to email.", user.getEmail());
+        } catch (Exception e) {
+            logger.error("Failed to send password reset email to {}: {}", user.getEmail(), e.getMessage());
+            // fallback: log link para desarrollo
+            String resetLink = String.format("%s/reset-password?token=%s", frontendBaseUrl, rawToken);
+            logger.info("Password reset link (fallback log) for {}: {}", user.getEmail(), resetLink);
+        }
     }
 
     public boolean validateToken(String rawToken) {
@@ -127,8 +154,7 @@ public class PasswordResetService {
     }
 
     private String getFrontendResetUrl() {
-        // se puede leer de properties, por ahora usar valor por defecto
-        return "http://localhost:4200/reset-password";
+        return frontendBaseUrl + "/reset-password";
     }
 }
 
