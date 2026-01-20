@@ -23,13 +23,13 @@ import java.util.Map;
 public class EmailServiceBrevoImpl implements EmailService {
     private static final Logger logger = LoggerFactory.getLogger(EmailServiceBrevoImpl.class);
 
-    @Value("${brevo.api.key:}")
+    @Value("${brevo.api.key}")
     private String apiKey;
 
-    @Value("${brevo.sender.email:no-reply@memoworks.example}")
+    @Value("${brevo.sender.email}")
     private String senderEmail;
 
-    @Value("${brevo.sender.name:MemoWorks}")
+    @Value("${brevo.sender.name}")
     private String senderName;
 
     private final RestTemplate restTemplate = new RestTemplate();
