@@ -30,8 +30,7 @@ public class Task {
     private LocalTime time;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", nullable = false)
-    //@JsonBackReference
-    @JsonIgnore
+    @JsonBackReference
     private User assigmentFor;
     @Column(nullable = false)
     private Boolean status;

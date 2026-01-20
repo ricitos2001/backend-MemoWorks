@@ -3,8 +3,6 @@ package com.example.catalog.domain.dto;
 import com.example.catalog.domain.entities.Group;
 import com.example.catalog.domain.entities.Task;
 import com.example.catalog.domain.enums.Rol;
-import jakarta.persistence.Column;
-import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -30,12 +28,9 @@ public class UserRequestDTO {
     private String email;
     @Size(min=8, max=20, message = "la contraseña debe tener entre 8 y 20 caracteres")
     private String password;
-    @OneToMany
     private List<Task> tasks;
     private Rol rol;
-    @Column(nullable = true)
     private String avatar;
-    @Column(nullable = true)
     private List<Group> groups;
 
 }
