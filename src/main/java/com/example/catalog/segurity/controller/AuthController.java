@@ -43,7 +43,7 @@ public class AuthController {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
 
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-        String token = jwtUtil.generateToken((CustomUserDetails) authentication.getPrincipal());
+        String token = jwtUtil.generateToken(userDetails);
 
         Cookie jwtCookie = new Cookie("jwt", token);
         jwtCookie.setHttpOnly(true);

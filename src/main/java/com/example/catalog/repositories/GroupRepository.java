@@ -16,10 +16,6 @@ public interface GroupRepository extends JpaRepository<Group, Long> {
 
     boolean existsByName(String name);
 
-    Page<Group> findByAdminUserEmail(String adminUserEmail, Pageable pageable);
-
-    // Busca grupos donde el usuario sea admin o esté en la colección users (miembro).
-    // Se usa DISTINCT para evitar duplicados si coincide en ambas condiciones.
     @Query("SELECT DISTINCT g FROM Group g LEFT JOIN g.users u WHERE g.adminUser.email = :email OR u.email = :email")
     Page<Group> findByAdminOrMemberEmail(@Param("email") String email, Pageable pageable);
 }
