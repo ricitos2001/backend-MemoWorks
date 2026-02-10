@@ -166,6 +166,8 @@ public class UserControler {
         }
     }
 
+    // endpoint para obtener todos los usuarios de la lista (lo siento si no tuve una mejor idea)
+    @Operation(summary = "Obtener usurios registrados", description = "Obtiene una lista paginada con todos los usuarios registrados", parameters = {@Parameter(name = "pageable", description = "parametro que indica que el contenido del endpoint debe mostrarse en diferentes paginas")})
     @GetMapping
     ResponseEntity<Page<UserResponseDTO>> GetAllUsersRegistered(Pageable pageable) {
         Page<UserResponseDTO> allUsers = userService.GetAllUsersRegistered(pageable);
