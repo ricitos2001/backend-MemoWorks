@@ -42,10 +42,11 @@ public class UserService {
         this.emailService = emailService;
     }
 
+    /*
     public Page<UserResponseDTO> list(Pageable pageable) {
         Page<UserResponseDTO> users = userRepository.findAll(pageable).map(UserMapper::toDTO);
         return users;
-    }
+    }*/
 
     public UserResponseDTO showById(Long id) {
         User user = userRepository.getUserById(id);

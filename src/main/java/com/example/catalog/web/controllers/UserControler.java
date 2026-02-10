@@ -34,12 +34,13 @@ public class UserControler {
         this.userService = userService;
     }
 
+    /*
     @GetMapping
     @Operation(summary = "Listar usuarios", description = "Obtiene una lista paginada de todos los usuarios.", parameters = {@Parameter(name = "page", description = "Número de página (0-indexado)."), @Parameter(name = "size", description = "Tamaño de la página."), @Parameter(name = "sort", description = "Criterios de ordenación en el formato: propiedad,(asc|desc).")})
     public ResponseEntity<Page<UserResponseDTO>> list(Pageable pageable) {
         Page<UserResponseDTO> users = userService.list(pageable);
         return ResponseEntity.ok(users);
-    }
+    }*/
 
     @GetMapping("/id/{id}")
     @Operation(summary = "Obtener usuario por ID", description = "Obtiene los detalles de un usuario específico utilizando su ID.", parameters = {@Parameter(name = "id", description = "ID del usuario a obtener.")})
