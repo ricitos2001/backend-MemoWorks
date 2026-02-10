@@ -34,13 +34,13 @@ public class UserControler {
         this.userService = userService;
     }
 
-    /*
+
     @GetMapping
     @Operation(summary = "Listar usuarios", description = "Obtiene una lista paginada de todos los usuarios.", parameters = {@Parameter(name = "page", description = "Número de página (0-indexado)."), @Parameter(name = "size", description = "Tamaño de la página."), @Parameter(name = "sort", description = "Criterios de ordenación en el formato: propiedad,(asc|desc).")})
     public ResponseEntity<Page<UserResponseDTO>> list(Pageable pageable) {
         Page<UserResponseDTO> users = userService.list(pageable);
         return ResponseEntity.ok(users);
-    }*/
+    }
 
     @GetMapping("/id/{id}")
     @Operation(summary = "Obtener usuario por ID", description = "Obtiene los detalles de un usuario específico utilizando su ID.", parameters = {@Parameter(name = "id", description = "ID del usuario a obtener.")})
@@ -160,18 +160,11 @@ public class UserControler {
                 case "image/jpeg" -> MediaType.IMAGE_JPEG;
                 case "image/png" -> MediaType.IMAGE_PNG;
                 case "image/gif" -> MediaType.IMAGE_GIF;
-                default -> throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Formato de imagen no soportado: " + contentType);
+                default ->
+                        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Formato de imagen no soportado: " + contentType);
             };
         } catch (IOException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error al determinar el tipo de contenido", e);
         }
-    }
-
-    // endpoint para obtener todos los usuarios de la lista (lo siento si no tuve una mejor idea)
-    @Operation(summary = "Obtener usurios registrados", description = "Obtiene una lista paginada con todos los usuarios registrados", parameters = {@Parameter(name = "pageable", description = "parametro que indica que el contenido del endpoint debe mostrarse en diferentes paginas")})
-    @GetMapping
-    ResponseEntity<Page<UserResponseDTO>> GetAllUsersRegistered(Pageable pageable) {
-        Page<UserResponseDTO> allUsers = userService.GetAllUsersRegistered(pageable);
-        return ResponseEntity.ok(allUsers);
     }
 }

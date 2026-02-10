@@ -1,7 +1,7 @@
 # Prueba practica examen
 ## Qué endpoint has creado y por qué.
-He creado un endpoint llamado `GetAllUsersRegistered` que sirve para obtener una lista pageable con todos los usuarios registrados en la página web
-Decidi crear este endpoint porque era una idea sencilla además de que no se me ocurria otra cosa mejor por hacer
+He creado un endpoint llamado `GetTasksByStatus` en `TaskController` que se utiliza para obtener una serie de tareas en funcion de su estado "true o false"
+Este endpoint lo decidí crear, ya que me parecía algo simple ademas de que era algo que no habia realizado aun
 ## Cómo has implementado la seguridad.
 He implementado una seguridad de tipo JWT y la he configurado para que no permita ver la información de los endpoints a no ser que uses un token JWT 
 ## Capturas o comandos para probarlo.

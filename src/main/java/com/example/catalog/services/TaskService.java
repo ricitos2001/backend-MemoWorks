@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -61,6 +62,10 @@ public class TaskService {
         }
     }
 
+    public Page<TaskResponseDTO> listByStatus(Boolean status, Pageable pageable) {
+        return taskRepository.findByStatus(status, pageable).map(TaskMapper::toDTO);
+    }
+
     public TaskResponseDTO showByTitle(String title) {
         Task task = taskRepository.getTaskByTitle(title);
         if (task == null) {
@@ -69,6 +74,8 @@ public class TaskService {
             return TaskMapper.toDTO(task);
         }
     }
+
+
 
     public TaskResponseDTO create(TaskRequestDTO dto) {
         if (taskRepository.existsByTitle(dto.getTitle())) {

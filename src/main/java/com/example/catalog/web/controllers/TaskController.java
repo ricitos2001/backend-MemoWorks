@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import jakarta.validation.Valid;
+import org.apache.coyote.Response;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,6 +26,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.util.List;
 
 @SecurityScheme(
         name = "BearerAuth",
@@ -45,7 +48,7 @@ public class TaskController {
 
     @GetMapping
     @Operation(summary = "Listar tareas", description = "Obtiene una lista paginada de todas las tareas.")
-    public ResponseEntity<Page<TaskResponseDTO>> list(@RequestParam(name = "status", required = false) Pageable pageable) {
+    public ResponseEntity<Page<TaskResponseDTO>> list(Pageable pageable) {
         Page<TaskResponseDTO> tasks = taskService.list(pageable);
         return ResponseEntity.ok(tasks);
     }
@@ -69,6 +72,13 @@ public class TaskController {
     public ResponseEntity<TaskResponseDTO> getById(@PathVariable(name = "id") Long id) {
         TaskResponseDTO task = taskService.showById(id);
         return ResponseEntity.ok(task);
+    }
+
+    @GetMapping("/{status}")
+    @Operation(summary = "Listar tareas por el status de la tarea", description = "Obtiene una lista paginada de todas las tareas en base al estado en el que estan", parameters = {@Parameter(name = "status", description = "estado de la tarea")})
+    public ResponseEntity<Page<TaskResponseDTO>> listByStatus(@PathVariable(name = "status") Boolean status, Pageable pageable) {
+        Page<TaskResponseDTO> tasks = taskService.listByStatus(status, pageable);
+        return ResponseEntity.ok(tasks);
     }
 
     @PostMapping
