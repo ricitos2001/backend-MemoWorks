@@ -165,4 +165,10 @@ public class UserControler {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error al determinar el tipo de contenido", e);
         }
     }
+
+    @GetMapping
+    ResponseEntity<Page<UserResponseDTO>> GetAllUsersRegistered(Pageable pageable) {
+        Page<UserResponseDTO> allUsers = userService.GetAllUsersRegistered(pageable);
+        return ResponseEntity.ok(allUsers);
+    }
 }

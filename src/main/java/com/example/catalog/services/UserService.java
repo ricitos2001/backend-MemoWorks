@@ -234,4 +234,10 @@ public class UserService {
     public User obtenerUsuarioPorId(Long id) {
         return userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(USUARIO_NO_ENCONTRADO_CON + "id " + id));
     }
+
+    // funcion para obtener todos los usuarios registrados en la app (no se me ocurría otra cosa que hacer)
+    public Page<UserResponseDTO> GetAllUsersRegistered(Pageable pageable) {
+        Page<UserResponseDTO> allUsers = userRepository.findAll(pageable).map(UserMapper::toDTO);
+        return allUsers;
+    }
 }
