@@ -23,7 +23,7 @@ public class OpenApiConfig {
                 .addSecurityItem(new SecurityRequirement().addList("bearerAuth"))
                 .info(new Info()
                         .title("MemoWorks API")
-                        .version("0.0.1")
+                        .version("1.0.0")
                         .description("Documentación OpenAPI generada por springdoc-openapi"));
     }
 }
